@@ -150,6 +150,12 @@ Detailed system design and implementation notes:
 
 ---
 
+## K6 load testing results:
+
+[`docs/load-testing.md`](docs/load-testing.md)
+
+---
+
 ## Purpose
 
 This project demonstrates backend engineering concepts such as:
