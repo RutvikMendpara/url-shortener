@@ -289,7 +289,8 @@ Logs help diagnose issues during development and debugging.
 
 A simple health check endpoint is available at:
 
-```/health
+```
+/health
 
 ```
 
