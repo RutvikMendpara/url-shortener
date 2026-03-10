@@ -1,6 +1,29 @@
 version: "3.9"
 
 services:
+  api:
+    build: .
+    container_name: url_shortener_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/url_shortener
+      REDIS_HOST: redis
+
+  worker:
+    build: .
+    container_name: url_shortener_worker
+    command: rq worker analytics --url redis://redis:6379
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/url_shortener
+      REDIS_HOST: redis
+
   redis:
     image: redis:7
     container_name: url_shortener_redis
