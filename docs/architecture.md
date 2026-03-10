@@ -285,6 +285,28 @@ Logs help diagnose issues during development and debugging.
 
 ---
 
+# Health Checks
+
+A simple health check endpoint is available at:
+
+```/health
+
+```
+
+This endpoint performs basic checks to ensure the API can connect to its dependencies (PostgreSQL and Redis).
+
+```
+Response example if healthy:
+
+{"status":"ok","postgres":true,"redis":true}
+
+Response example if postgres unhealthy:
+
+{"status":"unhealthy","postgres":false,"redis":true}
+
+
+```
+
 # Container Architecture
 
 The system is deployed locally using Docker Compose.

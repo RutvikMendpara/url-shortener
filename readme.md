@@ -62,6 +62,8 @@ Docker Compose is used to run the entire stack locally.
 | POST   | /shorten                | create short URL         |
 | GET    | /url/{short_code}       | redirect to original URL |
 | GET    | /url/stats/{short_code} | retrieve analytics       |
+| GET    | /health                 | system health check      |
+| GET    | /metrics                | Prometheus metrics       |
 
 Interactive API docs are available at:
 
