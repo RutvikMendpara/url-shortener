@@ -175,6 +175,38 @@ This keeps the redirect path **extremely fast**.
 
 ---
 
+### Observability
+
+The service exposes operational metrics and structured logs to monitor system behavior and performance.
+
+Metrics (Prometheus)
+
+```
+GET /metrics
+```
+
+Tracked metrics include:
+
+```
+
+redirect_requests_total      -> total redirect requests
+redis_cache_hits_total       -> Redis cache hits
+redis_cache_misses_total     -> Redis cache misses
+url_creations_total          -> total short URLs created
+rate_limited_requests_total  -> requests blocked by rate limiting
+redirect_latency_seconds     -> redirect latency histogram
+
+```
+
+Logging
+
+The application uses structured logging to record important events such as:
+
+- URL creation
+- redirects
+- rate_limited
+- cache hits/misses
+
 # Database Schema
 
 Table: `urls`
