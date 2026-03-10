@@ -135,6 +135,26 @@ rate_limit:{ip}
 
 ---
 
+### Analytical Endpoint
+
+Analytics endpoint provides insights about a short URL:
+
+```
+GET /analytics/{short_code}
+```
+
+```
+Response:
+
+{
+  "short_code": "2",
+  "original_url": "https://google.com/",
+  "click_count": 4,
+  "created_at": "2026-03-10T05:13:26.215345",
+  "expires_at": "2026-12-10T05:07:36.089000Z"
+}
+```
+
 ### Asynchronous Analytics
 
 Each redirect generates an analytics event.
