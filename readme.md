@@ -61,7 +61,7 @@ Example response
 
 ```
 {
-  "short_url": "http://localhost:8000/abc123"
+  "short_url": "http://localhost:8000/url/abc123"
 }
 ```
 
@@ -262,14 +262,14 @@ Response:
 
 ```
 {
-  "short_url": "http://localhost:8000/a1B"
+  "short_url": "http://localhost:8000/url/a1B"
 }
 ```
 
 Visit:
 
 ```
-http://localhost:8000/a1B
+http://localhost:8000/url/a1B
 ```
 
 The user will be redirected to the original URL.
