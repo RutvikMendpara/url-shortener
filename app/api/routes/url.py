@@ -6,6 +6,7 @@ from app.db.deps import get_db
 from app.models.url import URL
 from app.api.schemas.url import URLCreate, URLResponse
 from app.services.short_code import encode_base62
+from app.db.redis import redis_client
 
 router = APIRouter()
 
@@ -40,9 +41,21 @@ def create_short_url(payload: URLCreate, db: Session = Depends(get_db)):
 @router.get("/{short_code}")
 def redirect_url(short_code: str, db: Session = Depends(get_db)):
 
+    # 1. Check Redis cache
+    cached_url = redis_client.get(short_code)
+
+    if cached_url:
+        print("Cache hit")
+        return RedirectResponse(cached_url)
+    
+    # 2. Fallback to database
     url = db.query(URL).filter(URL.short_code == short_code).first()
 
     if not url:
         raise HTTPException(status_code=404, detail="URL not found")
 
+
+    # 3. Store in Redis cache
+    print("Cache miss - storing in Redis")
+    redis_client.set(short_code, url.original_url, ex=3600)  # Cache for 1 hour
     return RedirectResponse(url.original_url)
