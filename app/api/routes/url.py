@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends , HTTPException , status
+from fastapi import APIRouter, Depends , HTTPException , status, Request
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse
 
@@ -10,11 +10,17 @@ from app.db.redis import redis_client
 
 from app.queue import queue
 from app.workers.click_worker import process_click
+from app.services.rate_limiter import is_rate_limited
 
 router = APIRouter()
 
 @router.post("/shorten", response_model=URLResponse)
-def create_short_url(payload: URLCreate, db: Session = Depends(get_db)):
+def create_short_url(payload: URLCreate,   request: Request, db: Session = Depends(get_db)):
+
+    ip = request.client.host
+
+    if is_rate_limited(ip):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded")
 
     # Step 1: create row
     url = URL(
