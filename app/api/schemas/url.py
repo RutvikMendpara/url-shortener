@@ -9,3 +9,11 @@ class URLCreate(BaseModel):
 
 class URLResponse(BaseModel):
     short_url: str
+
+
+class URLStatsResponse(BaseModel):
+    short_code: str
+    original_url: HttpUrl
+    click_count: int
+    created_at: datetime
+    expires_at: Optional[datetime] = None

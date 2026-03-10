@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 
 from app.db.deps import get_db
 from app.models.url import URL
-from app.api.schemas.url import URLCreate, URLResponse
+from app.api.schemas.url import URLCreate, URLResponse , URLStatsResponse
 from app.services.short_code import encode_base62
 from app.db.redis import redis_client
 
@@ -47,6 +47,23 @@ def create_short_url(payload: URLCreate,   request: Request, db: Session = Depen
 
 
 
+@router.get("/stats/{short_code}", response_model=URLStatsResponse)
+def get_url_stats(short_code: str, db: Session = Depends(get_db)):
+
+    url = db.query(URL).filter(URL.short_code == short_code).first()
+
+    if not url:
+        raise HTTPException(status_code=404, detail="URL not found")
+
+    return {
+        "short_code": url.short_code,
+        "original_url": url.original_url,
+        "click_count": url.click_count,
+        "created_at": url.created_at,
+        "expires_at": url.expires_at,
+    }
+
+
 @router.get("/{short_code}")
 def redirect_url(short_code: str, db: Session = Depends(get_db)):
 
@@ -75,3 +92,4 @@ def redirect_url(short_code: str, db: Session = Depends(get_db)):
     queue.enqueue(process_click, short_code)
 
     return RedirectResponse(url.original_url)
+
