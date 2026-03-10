@@ -166,3 +166,4 @@ This project demonstrates backend engineering concepts such as:
 - rate limiting
 - containerized service architecture
 - observability with metrics and dashboards
+- load testing and performance analysis

@@ -378,7 +378,6 @@ custom short codes
 link expiration enforcement
 authentication
 API keys for rate limiting
-load testing
 horizontal scaling
 distributed workers
 ```
