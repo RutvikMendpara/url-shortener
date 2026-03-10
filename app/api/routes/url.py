@@ -8,6 +8,9 @@ from app.api.schemas.url import URLCreate, URLResponse
 from app.services.short_code import encode_base62
 from app.db.redis import redis_client
 
+from app.queue import queue
+from app.workers.click_worker import process_click
+
 router = APIRouter()
 
 @router.post("/shorten", response_model=URLResponse)
@@ -48,8 +51,7 @@ def redirect_url(short_code: str, db: Session = Depends(get_db)):
         # print("Cache hit")
         url = db.query(URL).filter(URL.short_code == short_code).first()
         if url:
-            url.click_count += 1
-            db.commit()
+            queue.enqueue(process_click, short_code)
 
         return RedirectResponse(cached_url)
     
@@ -61,10 +63,9 @@ def redirect_url(short_code: str, db: Session = Depends(get_db)):
 
 
     # 3. Store in Redis cache
-    print("Cache miss - storing in Redis")
+    # print("Cache miss - storing in Redis")
     redis_client.set(short_code, url.original_url, ex=3600)  # Cache for 1 hour
 
-    url.click_count += 1
-    db.commit()
-    
+    queue.enqueue(process_click, short_code)
+
     return RedirectResponse(url.original_url)
