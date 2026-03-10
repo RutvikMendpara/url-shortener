@@ -177,35 +177,43 @@ This keeps the redirect path **extremely fast**.
 
 ### Observability
 
-The service exposes operational metrics and structured logs to monitor system behavior and performance.
+The service includes basic observability using **structured logging**, **Prometheus**, and **Grafana**.
 
-Metrics (Prometheus)
+#### Metrics
+
+Application metrics are exposed at:
 
 ```
 GET /metrics
 ```
 
-Tracked metrics include:
+Prometheus scrapes this endpoint to collect operational metrics such as:
 
-```
+redirect_requests_total -> total redirect requests
+redis_cache_hits_total -> Redis cache hits
+redis_cache_misses_total -> Redis cache misses
+url_creations_total -> total short URLs created
+rate_limited_requests_total -> requests blocked by rate limiting
+redirect_latency_seconds -> redirect latency histogram
 
-redirect_requests_total      -> total redirect requests
-redis_cache_hits_total       -> Redis cache hits
-redis_cache_misses_total     -> Redis cache misses
-url_creations_total          -> total short URLs created
-rate_limited_requests_total  -> requests blocked by rate limiting
-redirect_latency_seconds     -> redirect latency histogram
+These metrics help monitor request traffic, cache efficiency, and API latency.
 
-```
+#### Logging
 
-Logging
-
-The application uses structured logging to record important events such as:
+Structured logs capture important system events including:
 
 - URL creation
-- redirects
-- rate_limited
-- cache hits/misses
+- redirect requests
+- rate limiting
+- cache hits and misses
+
+#### Grafana
+
+Grafana is used to visualize Prometheus metrics through dashboards.
+
+```
+Grafana UI: http://localhost:3000
+```
 
 # Database Schema
 
