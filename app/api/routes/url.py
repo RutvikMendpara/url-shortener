@@ -45,7 +45,12 @@ def redirect_url(short_code: str, db: Session = Depends(get_db)):
     cached_url = redis_client.get(short_code)
 
     if cached_url:
-        print("Cache hit")
+        # print("Cache hit")
+        url = db.query(URL).filter(URL.short_code == short_code).first()
+        if url:
+            url.click_count += 1
+            db.commit()
+
         return RedirectResponse(cached_url)
     
     # 2. Fallback to database
@@ -58,4 +63,8 @@ def redirect_url(short_code: str, db: Session = Depends(get_db)):
     # 3. Store in Redis cache
     print("Cache miss - storing in Redis")
     redis_client.set(short_code, url.original_url, ex=3600)  # Cache for 1 hour
+
+    url.click_count += 1
+    db.commit()
+    
     return RedirectResponse(url.original_url)
